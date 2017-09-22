@@ -9,7 +9,7 @@
 #include <cstring>
 #include <assert.h>
 
-template<class T, unsigned int BLOCK_SIZE, unsigned int MAX_NUM_BLOCKS>
+template<class T, unsigned int BLOCK_SIZE = 32, unsigned int MAX_NUM_BLOCKS = 4>
 class BlockAllocator
 {
 private:
