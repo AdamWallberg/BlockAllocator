@@ -1,7 +1,7 @@
 /**
 	@file BlockAllocator.hpp
 	@author Adam Wallberg
-	@date 22/09/2017
+	@date 23/09/2017
 */
 
 #pragma once
@@ -39,44 +39,25 @@ public:
 		}
 	}
 
-	T* alloc(const T&  object)
+	// Constructs the object in place, from specified parameters
+	template<class... Params>
+	T* alloc(Params&&... args)
 	{
-		Block* block = &blocks[currentBlock];
-		int position = block->current - block->first;
-
-		while (true)
-		{
-			// Check if we are out of space in current block.
-			if (block->current > block->last)
-			{
-				// Check if we have to allocate a new block,
-				// or if we already have an empty one.
-				currentBlock++;
-				if (currentBlock >= numBlocks)
-					blocks[currentBlock] = allocBlock();
-				
-				// Update pointer
-				block = &blocks[currentBlock];
-				position = block->current - block->first;
-			}
-			// Check if the current address is filled.
-			else if (block->filledFlags[position])
-			{
-				block->current++;
-				position = block->current - block->first;
-			}
-			else
-			{
-				// We have found a free address.
-				break;
-			}
-		}
-
 		// Store result in address.
-		T* result = block->current;
+		T* result = getFreeAddress();
+		*result = T(args...);
+		
+		incrementBlock();
+		return result;
+	}
+
+	// Copies the value of the object into the address
+	T* insert(const T& object)
+	{
+		T* result = getFreeAddress();
 		*result = object;
-		block->filledFlags[position] = true;
-		block->current++;
+		
+		incrementBlock();
 		return result;
 	}
 
@@ -109,9 +90,54 @@ public:
 			}
 		}
 	}
-	
+
 	unsigned int getNumAllocatedBlocks() const { return numBlocks; }
 private:
+	// Retrieves the next free address.
+	T* getFreeAddress()
+	{
+		Block* block = &blocks[currentBlock];
+		int position = block->current - block->first;
+
+		while (true)
+		{
+			// Check if we are out of space in current block.
+			if (block->current > block->last)
+			{
+				// Check if we have to allocate a new block,
+				// or if we already have an empty one.
+				currentBlock++;
+				if (currentBlock >= numBlocks)
+					blocks[currentBlock] = allocBlock();
+
+				// Update pointer
+				block = &blocks[currentBlock];
+				position = block->current - block->first;
+			}
+			// Check if the current address is filled.
+			else if (block->filledFlags[position])
+			{
+				block->current++;
+				position = block->current - block->first;
+			}
+			else
+			{
+				// We have found a free address.
+				break;
+			}
+		}
+
+		return block->current;
+	}
+
+	void incrementBlock()
+	{
+		Block* block = &blocks[currentBlock];
+		unsigned int position = block->current - block->first;
+		block->filledFlags[position] = true;
+		block->current++;
+	}
+
 	Block allocBlock()
 	{
 		assert(
