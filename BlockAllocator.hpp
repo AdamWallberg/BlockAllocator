@@ -109,6 +109,8 @@ public:
 			}
 		}
 	}
+	
+	unsigned int getNumAllocatedBlocks() const { return numBlocks; }
 private:
 	Block allocBlock()
 	{
