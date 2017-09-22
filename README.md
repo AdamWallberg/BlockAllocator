@@ -16,8 +16,13 @@ BlockAllocator<Foo> allocator;
 ### Allocation
 This stores the object on the heap and returns the address. The object is sent as a reference, and is then copied onto the heap.
 ```cpp
-Foo* objPtr = allocator.alloc(Foo());
+Foo* objPtr = allocator.insert(Foo(1, 2, 3));
 ```
+This constructs the object directly onto the heap, taking the object's constructor arguments. 
+```cpp
+Foo* objPtr = allocator.alloc(1, 2, 3);
+```
+Both these examples assumes ```Foo``` has a constructor that takes 3 integers.
 ### Deallocation
 This removes the element from the block, and frees up its spot. 
 ```cpp
