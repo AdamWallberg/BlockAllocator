@@ -6,9 +6,12 @@ There are definitively better options out there, but it might be good for educat
 This allocator is a standard block/pool allocator that, when created, allocates a block of memory from the heap. You can then store objects in this block using the member method ```alloc()```. If you run out of memory in the current block, another block will be allocated. How many elements can be stored in one block, and the maximum total amount of blocks that can be allocated is defined by the user. A too small block size will result in a lot of dynamic allocation, so it's recommended to set these values accordingly.
 
 ### Creation
-This example creates an allocator that stores objects of the type ```Foo```. One block can hold 32 elements, and a total of 8 blocks can be allocated.
+This example creates an allocator that stores objects of the type ```Foo```, where one block can hold 8 elements, and a total of 2 blocks can be allocated.
 ```cpp
-BlockAllocator<Foo, 32, 8> allocator;
+// Like this for custom values
+BlockAllocator<Foo, 8, 2> allocator;
+// Or like this for a default of 32 and 4
+BlockAllocator<Foo> allocator;
 ```
 ### Allocation
 This stores the object on the heap and returns the address. The object is sent as a reference, and is then copied onto the heap.
