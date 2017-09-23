@@ -22,7 +22,7 @@ This constructs the object directly onto the heap, taking the object's construct
 ```cpp
 Foo* objPtr = allocator.alloc(1, 2, 3);
 ```
-Both these examples assumes ```Foo``` has a constructor that takes 3 integers.
+Both these examples assume that ```Foo``` has a constructor that takes 3 integers.
 ### Deallocation
 This removes the element from the block, and frees up its spot. 
 ```cpp
