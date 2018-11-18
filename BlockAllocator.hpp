@@ -14,7 +14,7 @@ class BlockAllocator
 {
 private:
 	static_assert(BLOCK_SIZE > 0, "Block size should not be less than 1!");
-	static_assert(BLOCK_SIZE > 0, "Max number of blocks should not be less than 1!");
+	static_assert(MAX_NUM_BLOCKS > 0, "Max number of blocks should not be less than 1!");
 
 	struct Block
 	{
